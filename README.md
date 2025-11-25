@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dialogues @ Beloit 🗣️
 
-## Getting Started
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-cyan)
 
-First, run the development server:
+**Dialogues @ Beloit** is a modern, anonymous-first discussion platform designed for the Beloit College community. It provides a safe, engaging space for students to share thoughts, ask questions, and connect with peers in a visually stunning, dark-themed environment.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **🚀 Real-time Discussions**: Start conversations instantly with location tagging and topic categorization.
+- **💬 Threaded Comments**: Engage in deep discussions with a reddit-style nested comment system.
+- **🗳️ Community Voting**: Upvote or downvote posts and comments to surface the best content.
+- **🔒 Secure Authentication**: Seamless sign-up and login powered by Supabase Auth.
+- **🎨 Premium UI/UX**: A sleek, dark-mode interface featuring particle physics backgrounds and glassmorphism effects.
+- **📱 Fully Responsive**: Optimized for a flawless experience on mobile, tablet, and desktop.
+- **🛡️ Moderation Tools**: Authors can close discussions to manage conversation flow.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend**: [Next.js 14](https://nextjs.org/) (App Router), [React](https://reactjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/), [Lucide Icons](https://lucide.dev/)
+- **Backend & Auth**: [Supabase](https://supabase.com/)
+- **Database**: PostgreSQL (via Supabase)
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+Follow these steps to get the project running locally.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js 18+
+- npm or yarn
+- A Supabase account
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/ThryLox/Dialogues-Beloit.git
+    cd Dialogues-Beloit
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**
+    Create a `.env.local` file in the root directory and add your Supabase credentials:
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
+
+4.  **Database Setup**
+    Run the SQL scripts provided in `schema.sql` (and `migration.sql` for cascade deletes) in your Supabase SQL Editor to set up the tables and security policies.
+
+5.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+6.  **Open the app**
+    Visit [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.
