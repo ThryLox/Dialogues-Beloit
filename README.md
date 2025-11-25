@@ -26,6 +26,21 @@
 - **Backend & Auth**: [Supabase](https://supabase.com/)
 - **Database**: PostgreSQL (via Supabase)
 
+## 📚 Documentation
+
+For detailed information about the application architecture, workflows, and implementation:
+
+👉 **[View Complete Workflow Documentation](docs/WORKFLOW.md)**
+
+The documentation includes:
+- System architecture diagrams
+- Authentication flow
+- Main application workflows (browse, create, comment, vote)
+- Database schema and relationships
+- Component hierarchy
+- Security implementation
+- Deployment guide
+
 ## 🚀 Getting Started
 
 Follow these steps to get the project running locally.
