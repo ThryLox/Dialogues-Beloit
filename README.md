@@ -36,35 +36,33 @@ Follow these steps to get the project running locally.
 - npm or yarn
 - A Supabase account
 
-### Installation
+### Live Demo
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/ThryLox/Dialogues-Beloit.git
-    cd Dialogues-Beloit
-    ```
+Check out the live application here: **[Insert Website Link Here]**
 
-2.  **Install dependencies**
+### Local Development
+
+1.  **Install dependencies**
     ```bash
     npm install
     ```
 
-3.  **Environment Setup**
+2.  **Environment Setup**
     Create a `.env.local` file in the root directory and add your Supabase credentials:
     ```env
     NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
     ```
 
-4.  **Database Setup**
+3.  **Database Setup**
     Run the SQL scripts provided in `schema.sql` (and `migration.sql` for cascade deletes) in your Supabase SQL Editor to set up the tables and security policies.
 
-5.  **Run the development server**
+4.  **Run the development server**
     ```bash
     npm run dev
     ```
 
-6.  **Open the app**
+5.  **Open the app**
     Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🤝 Contributing
