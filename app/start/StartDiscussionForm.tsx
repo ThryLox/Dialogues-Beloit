@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ArrowRight } from 'lucide-react'
 
 export default function StartDiscussionForm({ userId }: { userId: string }) {
     const router = useRouter()
-    const supabase = createClient() as any
+    const supabase = createClient()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -39,7 +39,7 @@ export default function StartDiscussionForm({ userId }: { userId: string }) {
                 status: 'live',
                 score: 0,
                 started_at: new Date().toISOString(),
-            })
+            } as any)
             .select()
             .single()
 
@@ -49,80 +49,85 @@ export default function StartDiscussionForm({ userId }: { userId: string }) {
             return
         }
 
-        router.push(`/conversations/${data.id}`)
+        router.push(`/conversations/${(data as any).id}`)
         router.refresh()
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-12">
             {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg text-sm">
+                <div className="p-4 text-xs uppercase tracking-widest text-center border border-red-500/30 text-red-500">
                     {error}
                 </div>
             )}
 
-            <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-400 mb-1">
-                    Title
-                </label>
-                <input
-                    type="text"
-                    name="title"
-                    id="title"
-                    required
-                    className="w-full bg-[#15151b] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                    placeholder="What's on your mind?"
-                />
-            </div>
-
-            <div>
-                <label htmlFor="body" className="block text-sm font-medium text-gray-400 mb-1">
-                    Details
-                </label>
-                <textarea
-                    name="body"
-                    id="body"
-                    required
-                    rows={5}
-                    className="w-full bg-[#15151b] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors resize-none"
-                    placeholder="Elaborate on your thought..."
-                />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-8">
                 <div>
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-400 mb-1">
-                        Location (Optional)
-                    </label>
                     <input
                         type="text"
-                        name="location"
-                        id="location"
-                        className="w-full bg-[#15151b] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="e.g. Pearsons"
+                        name="title"
+                        id="title"
+                        required
+                        className="w-full bg-transparent border-b border-[var(--border-subtle)] py-4 text-2xl md:text-3xl font-[family-name:var(--font-serif)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text)] transition-colors"
+                        placeholder="Title your discussion..."
                     />
                 </div>
+
                 <div>
-                    <label htmlFor="topic" className="block text-sm font-medium text-gray-400 mb-1">
-                        Topic (Optional)
-                    </label>
-                    <input
-                        type="text"
-                        name="topic"
-                        id="topic"
-                        className="w-full bg-[#15151b] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="e.g. Events"
+                    <textarea
+                        name="body"
+                        id="body"
+                        required
+                        rows={8}
+                        className="w-full bg-transparent border-b border-[var(--border-subtle)] py-4 text-lg font-light text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text)] transition-colors resize-none leading-relaxed"
+                        placeholder="What's on your mind? elaborate here..."
                     />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label htmlFor="location" className="block text-xs uppercase tracking-widest text-[var(--color-text-muted)] mb-2">
+                            Location (Optional)
+                        </label>
+                        <input
+                            type="text"
+                            name="location"
+                            id="location"
+                            className="w-full bg-transparent border-b border-[var(--border-subtle)] py-2 text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text)] transition-colors font-light"
+                            placeholder="e.g. Pearsons Hall"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="topic" className="block text-xs uppercase tracking-widest text-[var(--color-text-muted)] mb-2">
+                            Topic (Optional)
+                        </label>
+                        <input
+                            type="text"
+                            name="topic"
+                            id="topic"
+                            className="w-full bg-transparent border-b border-[var(--border-subtle)] py-2 text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text)] transition-colors font-light"
+                            placeholder="e.g. Campus Events"
+                        />
+                    </div>
                 </div>
             </div>
 
-            <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                {loading ? <Loader2 className="animate-spin" /> : 'Start Discussion'}
-            </button>
+            <div className="flex justify-end pt-8">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="group flex items-center gap-3 px-8 py-4 bg-[var(--color-text)] text-[var(--color-bg)] hover:bg-[var(--color-primary)] transition-all duration-300 text-xs uppercase tracking-[0.2em] disabled:opacity-50"
+                >
+                    {loading ? (
+                        <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                        <>
+                            <span>Publish Dialogue</span>
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </>
+                    )}
+                </button>
+            </div>
         </form>
     )
 }

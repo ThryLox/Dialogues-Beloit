@@ -1,29 +1,29 @@
 import { createClient } from '@/lib/supabase/server'
 import StartDiscussionForm from './StartDiscussionForm'
-import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 export default async function StartPage() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center">
-                <h1 className="text-2xl font-bold text-white mb-4">Join the Conversation</h1>
-                <p className="text-gray-400 mb-8">You need to be logged in to start a discussion.</p>
-                <Link
-                    href="/login" // Assuming login page exists or handled by Supabase Auth UI
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                >
-                    Log In
-                </Link>
-            </div>
-        )
+        redirect('/login')
     }
 
     return (
-        <div className="max-w-md mx-auto p-4 pb-24">
-            <h1 className="text-2xl font-bold text-white mb-6">Start a Discussion</h1>
+        <div className="max-w-2xl mx-auto p-6 pb-24">
+            <header className="mb-12 text-center">
+                <span className="block text-xs uppercase tracking-[0.3em] text-[var(--color-text-muted)] mb-4">
+                    New Dialogue
+                </span>
+                <h1 className="text-4xl md:text-5xl font-[family-name:var(--font-serif)] text-[var(--color-text)] mb-6">
+                    Start a Discussion
+                </h1>
+                <p className="text-[var(--color-text-muted)] font-light italic">
+                    Share your thoughts with the community.
+                </p>
+            </header>
+
             <StartDiscussionForm userId={user.id} />
         </div>
     )

@@ -2,41 +2,37 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, PlusCircle, User } from 'lucide-react'
+import { Home, Hash, Bell, User, PenSquare } from 'lucide-react'
 
 export default function BottomNav() {
     const pathname = usePathname()
 
-    const isActive = (path: string) => pathname === path
+    const navItems = [
+        { icon: Home, label: 'Home', href: '/' },
+        { icon: Hash, label: 'Explore', href: '/explore' },
+        { icon: PenSquare, label: 'Post', href: '/start' },
+        { icon: Bell, label: 'Alerts', href: '/notifications' },
+        { icon: User, label: 'Profile', href: '/me' },
+    ]
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#15151b] border-t border-white/10 pb-safe">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-[var(--color-bg)]/90 backdrop-blur-lg border-t border-[var(--border-subtle)] pb-safe z-50">
             <div className="flex justify-around items-center h-16">
-                <Link
-                    href="/"
-                    className={`flex flex-col items-center justify-center w-full h-full transition-colors ${isActive('/') ? 'text-white bg-black/50' : 'text-gray-400 hover:text-gray-200'
-                        }`}
-                >
-                    <Home size={24} />
-                    <span className="text-xs mt-1">Feed</span>
-                </Link>
-                <Link
-                    href="/start"
-                    className={`flex flex-col items-center justify-center w-full h-full transition-colors ${isActive('/start') ? 'text-red-500 bg-red-500/10' : 'text-gray-400 hover:text-gray-200'
-                        }`}
-                >
-                    <PlusCircle size={24} />
-                    <span className="text-xs mt-1">Start</span>
-                </Link>
-                <Link
-                    href="/me"
-                    className={`flex flex-col items-center justify-center w-full h-full transition-colors ${isActive('/me') ? 'text-green-500 bg-green-500/10' : 'text-gray-400 hover:text-gray-200'
-                        }`}
-                >
-                    <User size={24} />
-                    <span className="text-xs mt-1">Me</span>
-                </Link>
+                {navItems.map((item) => {
+                    const isActive = pathname === item.href
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'
+                                }`}
+                        >
+                            <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                            <span className="text-[10px] font-medium">{item.label}</span>
+                        </Link>
+                    )
+                })}
             </div>
-        </nav>
+        </div>
     )
 }

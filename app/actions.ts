@@ -56,11 +56,43 @@ export async function vote(
 
         const item = itemData as { score: number } | null
 
+        // ... (existing vote logic)
+
         if (item) {
+            const newScore = item.score + newScoreDelta
             await supabase
                 .from('conversations')
-                .update({ score: item.score + newScoreDelta })
+                .update({ score: newScore })
                 .eq('id', id)
+
+            // Check for "Hot" post (e.g., score > 10) and notify author if not already notified
+            if (newScore >= 10 && type === 'conversation') {
+                const { data: conversation } = await supabase
+                    .from('conversations')
+                    .select('author_id, title')
+                    .eq('id', id)
+                    .single()
+
+                if (conversation && conversation.author_id !== user.id) {
+                    // Check if already notified for hot post
+                    const { data: existingNotif } = await supabase
+                        .from('notifications')
+                        .select('id')
+                        .eq('type', 'hot_post')
+                        .eq('resource_id', id)
+                        .eq('user_id', conversation.author_id)
+                        .maybeSingle()
+
+                    if (!existingNotif) {
+                        await supabase.from('notifications').insert({
+                            user_id: conversation.author_id,
+                            type: 'hot_post',
+                            resource_id: id,
+                            content: `Your post "${conversation.title}" is trending!`,
+                        })
+                    }
+                }
+            }
         }
     } else {
         const { data } = await supabase
@@ -109,6 +141,45 @@ export async function vote(
     revalidatePath(`/conversations/${id}`)
     revalidatePath('/me')
 
+    return { success: true }
+}
+
+export async function createComment(conversationId: string, body: string) {
+    const supabase = (await createClient()) as any
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return { error: 'Unauthorized' }
+
+    // Insert comment
+    const { error } = await supabase
+        .from('comments')
+        .insert({
+            conversation_id: conversationId,
+            author_id: user.id,
+            body: body.trim(),
+            score: 0,
+            created_at: new Date().toISOString(),
+        })
+
+    if (error) return { error: error.message }
+
+    // Notify conversation author
+    const { data: conversation } = await supabase
+        .from('conversations')
+        .select('author_id, title')
+        .eq('id', conversationId)
+        .single()
+
+    if (conversation && conversation.author_id !== user.id) {
+        await supabase.from('notifications').insert({
+            user_id: conversation.author_id,
+            type: 'reply',
+            resource_id: conversationId,
+            content: `New reply on "${conversation.title}"`,
+        })
+    }
+
+    revalidatePath(`/conversations/${conversationId}`)
     return { success: true }
 }
 

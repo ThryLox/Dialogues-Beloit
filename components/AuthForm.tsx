@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ArrowRight } from 'lucide-react'
 
 export default function AuthForm() {
     const [email, setEmail] = useState('')
@@ -47,93 +47,77 @@ export default function AuthForm() {
     }
 
     return (
-        <div className="w-full max-w-md p-8 space-y-6 bg-[#15151b] rounded-xl border border-white/5">
-            <div className="text-center">
-                <h2 className="text-2xl font-bold text-white">
-                    {view === 'sign-in' ? 'Welcome Back' : 'Create Account'}
+        <div className="w-full max-w-sm mx-auto">
+            <div className="text-center mb-12">
+                <h2 className="text-2xl font-[family-name:var(--font-serif)] text-[var(--color-text)] mb-2">
+                    {view === 'sign-in' ? 'Welcome Back' : 'Membership Application'}
                 </h2>
-                <p className="mt-2 text-sm text-gray-400">
+                <p className="text-xs uppercase tracking-widest text-[var(--color-text-muted)]">
                     {view === 'sign-in'
-                        ? 'Sign in to continue to Dialogues @ Beloit'
-                        : 'Join the conversation today'}
+                        ? 'Please sign in to continue'
+                        : 'Create your account'}
                 </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-8">
                 {error && (
-                    <div className={`p-3 rounded-lg text-sm ${error.includes('Check your email')
-                            ? 'bg-green-500/10 border border-green-500/20 text-green-500'
-                            : 'bg-red-500/10 border border-red-500/20 text-red-500'
+                    <div className={`p-4 text-xs uppercase tracking-widest text-center border ${error.includes('Check your email')
+                        ? 'border-green-500/30 text-green-500'
+                        : 'border-red-500/30 text-red-500'
                         }`}>
                         {error}
                     </div>
                 )}
 
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="w-full bg-[#0a0a0b] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="you@beloit.edu"
-                    />
-                </div>
+                <div className="space-y-6">
+                    <div>
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="w-full bg-transparent border-b border-[var(--border-subtle)] py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text)] transition-colors text-sm font-light"
+                            placeholder="Email Address"
+                        />
+                    </div>
 
-                <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1">
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full bg-[#0a0a0b] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="••••••••"
-                    />
+                    <div>
+                        <input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="w-full bg-transparent border-b border-[var(--border-subtle)] py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-text)] transition-colors text-sm font-light"
+                            placeholder="Password"
+                        />
+                    </div>
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full group flex items-center justify-center gap-3 py-4 bg-[var(--color-surface-hover)] hover:bg-[var(--color-text)] text-[var(--color-text)] hover:text-[var(--color-bg)] transition-all duration-300 text-xs uppercase tracking-[0.2em] disabled:opacity-50"
                 >
                     {loading ? (
-                        <Loader2 className="animate-spin" />
+                        <Loader2 size={14} className="animate-spin" />
                     ) : (
-                        view === 'sign-in' ? 'Sign In' : 'Sign Up'
+                        <>
+                            <span>{view === 'sign-in' ? 'Enter' : 'Submit'}</span>
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </>
                     )}
                 </button>
             </form>
 
-            <div className="text-center text-sm text-gray-400">
-                {view === 'sign-in' ? (
-                    <p>
-                        Don't have an account?{' '}
-                        <button
-                            onClick={() => setView('sign-up')}
-                            className="text-blue-400 hover:text-blue-300 font-medium"
-                        >
-                            Sign up
-                        </button>
-                    </p>
-                ) : (
-                    <p>
-                        Already have an account?{' '}
-                        <button
-                            onClick={() => setView('sign-in')}
-                            className="text-blue-400 hover:text-blue-300 font-medium"
-                        >
-                            Sign in
-                        </button>
-                    </p>
-                )}
+            <div className="mt-12 text-center">
+                <button
+                    onClick={() => setView(view === 'sign-in' ? 'sign-up' : 'sign-in')}
+                    className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-[10px] uppercase tracking-widest transition-colors"
+                >
+                    {view === 'sign-in' ? 'Apply for Membership' : 'Already a Member?'}
+                </button>
             </div>
         </div>
     )

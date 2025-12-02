@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 
-export default function SignOutButton() {
+export default function SignOutButton({ className = '' }: { className?: string }) {
     const router = useRouter()
     const supabase = createClient()
     const [loading, setLoading] = useState(false)
@@ -21,9 +21,9 @@ export default function SignOutButton() {
         <button
             onClick={handleSignOut}
             disabled={loading}
-            className="w-full flex items-center justify-center space-x-2 p-2 bg-white/5 hover:bg-white/10 text-red-400 rounded-lg transition-colors disabled:opacity-50"
+            className={`flex items-center space-x-2 text-[var(--color-accent)] hover:text-red-400 transition-colors disabled:opacity-50 text-xs uppercase tracking-widest ${className}`}
         >
-            <LogOut size={16} />
+            <LogOut size={14} />
             <span>{loading ? 'Signing Out...' : 'Sign Out'}</span>
         </button>
     )

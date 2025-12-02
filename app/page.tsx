@@ -37,41 +37,41 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   }
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-4 pb-24">
-      <header className="flex justify-between items-center mb-6 pt-4">
-        <h1 className="text-2xl font-bold text-white">Dialogues</h1>
-        <div className="flex space-x-2 bg-[#15151b] p-1 rounded-lg">
+    <div className="w-full p-6 pb-24">
+      {/* Editorial Filter Header */}
+      <div className="flex justify-end mb-12 border-b border-[var(--border-subtle)] pb-4">
+        <div className="flex space-x-6 text-xs uppercase tracking-widest font-medium">
           <Link
             href="/?sort=top"
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${sort === 'top' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+            className={`transition-colors ${sort === 'top' ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
           >
-            Top
+            Popular
           </Link>
           <Link
             href="/?sort=new"
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${sort === 'new' ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-gray-200'}`}
+            className={`transition-colors ${sort === 'new' ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
           >
-            New
+            Latest
           </Link>
         </div>
-      </header>
+      </div>
 
-      <div className="space-y-4">
+      <div className="space-y-12">
         {conversations?.map((conversation) => (
           <ConversationCard
             key={conversation.id}
             conversation={conversation}
-            userVote={userVotesMap[conversation.id]}
+            userVote={userVotesMap[conversation.id] || 0}
             currentUserId={user?.id}
           />
         ))}
-        {(!conversations || conversations.length === 0) && (
-          <div className="text-center py-12 text-gray-500">
-            <p>No conversations yet.</p>
-            <p className="text-sm mt-2">Be the first to start one!</p>
-          </div>
-        )}
       </div>
+      {(!conversations || conversations.length === 0) && (
+        <div className="text-center py-12 text-gray-500">
+          <p>No conversations yet.</p>
+          <p className="text-sm mt-2">Be the first to start one!</p>
+        </div>
+      )}
     </div>
   )
 }

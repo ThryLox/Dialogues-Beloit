@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MapPin, MessageSquare, Loader2, XCircle } from 'lucide-react'
+import { MessageSquare, Loader2, XCircle, ArrowUpRight } from 'lucide-react'
 import ConversationVote from './ConversationVote'
 import { Database } from '@/lib/database.types'
 import { closeConversation } from '@/app/actions'
@@ -29,73 +29,66 @@ export default function ConversationCard({ conversation, userVote, currentUserId
     }
 
     return (
-        <div className={`flex space-x-4 p-4 bg-[#15151b] rounded-xl border transition-colors relative group ${conversation.status === 'closed' ? 'border-red-500/20 opacity-75' : 'border-white/5 hover:border-white/10'
-            }`}>
-            <div className="flex-shrink-0">
-                <ConversationVote
-                    id={conversation.id}
-                    initialScore={conversation.score}
-                    initialUserVote={userVote}
-                />
-            </div>
-            <Link href={`/conversations/${conversation.id}`} className="flex-1 min-w-0 block">
-                <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center space-x-2">
-                        {conversation.status === 'live' && (
-                            <span className="px-2 py-0.5 text-xs font-medium bg-red-500/20 text-red-500 rounded-full animate-pulse">
-                                LIVE
-                            </span>
-                        )}
-                        {conversation.status === 'closed' && (
-                            <span className="px-2 py-0.5 text-xs font-medium bg-gray-500/20 text-gray-400 rounded-full">
-                                CLOSED
-                            </span>
-                        )}
-                        <span className="text-xs text-gray-500">
-                            {new Date(conversation.started_at).toLocaleDateString()}
-                        </span>
-                        {conversation.location && (
-                            <span className="flex items-center text-xs text-gray-500">
-                                <MapPin size={12} className="mr-1" />
-                                {conversation.location}
-                            </span>
-                        )}
-                    </div>
-
-                    {isAuthor && (
-                        <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {conversation.status !== 'closed' && (
-                                <button
-                                    onClick={handleClose}
-                                    disabled={loading}
-                                    className="p-1 text-gray-400 hover:text-yellow-500 transition-colors"
-                                    title="Close Discussion"
-                                >
-                                    {loading ? <Loader2 size={14} className="animate-spin" /> : <XCircle size={14} />}
-                                </button>
-                            )}
-                        </div>
+        <Link href={`/conversations/${conversation.id}`} className="block group mb-12">
+            <div className="relative pb-12 border-b border-[var(--border-subtle)] transition-colors duration-500">
+                {/* Meta Data - Editorial Style */}
+                <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-4 font-medium">
+                    <span className="text-[var(--color-primary)]">
+                        {conversation.topic || 'General'}
+                    </span>
+                    <span>•</span>
+                    <span>{new Date(conversation.started_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</span>
+                    {conversation.location && (
+                        <>
+                            <span>•</span>
+                            <span>{conversation.location}</span>
+                        </>
                     )}
                 </div>
-                <h3 className={`text-lg font-semibold text-white mb-1 truncate transition-colors ${conversation.status === 'closed' ? 'text-gray-400 line-through' : 'group-hover:text-blue-400'
-                    }`}>
+
+                {/* Title - Serif & Elegant */}
+                <h3 className="text-4xl font-[family-name:var(--font-serif)] text-[var(--color-text)] mb-4 leading-tight group-hover:text-[var(--color-primary)] transition-colors duration-300">
                     {conversation.title}
                 </h3>
-                <p className="text-sm text-gray-400 line-clamp-2 mb-3">
+
+                {/* Body - Clean Sans */}
+                <p className="text-[var(--color-text-muted)] text-lg leading-relaxed line-clamp-3 mb-6 font-light max-w-2xl">
                     {conversation.body}
                 </p>
-                <div className="flex items-center space-x-4">
-                    <div className="flex items-center text-xs text-gray-500">
-                        <MessageSquare size={14} className="mr-1" />
-                        <span>Comments</span>
+
+                {/* Footer - Minimalist */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-8">
+                        <div onClick={(e) => e.preventDefault()} className="relative z-20">
+                            <ConversationVote
+                                id={conversation.id}
+                                initialScore={conversation.score}
+                                initialUserVote={userVote}
+                            />
+                        </div>
+                        <div className="flex items-center text-[var(--color-text-muted)] text-xs uppercase tracking-widest group-hover:text-[var(--color-text)] transition-colors">
+                            <span className="mr-2">Read Discussion</span>
+                            <ArrowUpRight size={14} />
+                        </div>
                     </div>
-                    {conversation.topic && (
-                        <span className="px-2 py-0.5 text-xs bg-white/5 text-gray-400 rounded-full">
-                            {conversation.topic}
+
+                    {isAuthor && conversation.status !== 'closed' && (
+                        <button
+                            onClick={handleClose}
+                            disabled={loading}
+                            className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors text-xs uppercase tracking-widest"
+                        >
+                            {loading ? 'Closing...' : 'Close'}
+                        </button>
+                    )}
+
+                    {conversation.status === 'closed' && (
+                        <span className="text-[10px] uppercase tracking-widest text-[var(--color-accent)] border border-[var(--color-accent)] px-2 py-1">
+                            Archived
                         </span>
                     )}
                 </div>
-            </Link>
-        </div>
+            </div>
+        </Link>
     )
 }

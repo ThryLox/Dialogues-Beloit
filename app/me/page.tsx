@@ -3,23 +3,24 @@ import Link from 'next/link'
 import ConversationCard from '@/components/ConversationCard'
 import SignOutButton from '@/components/SignOutButton'
 import { Database } from '@/lib/database.types'
+import { User, Settings, BookOpen } from 'lucide-react'
 
 type Profile = Database['public']['Tables']['users']['Row']
 type Conversation = Database['public']['Tables']['conversations']['Row']
 type Guide = Database['public']['Tables']['communication_guides']['Row']
 
 export default async function ProfilePage() {
-    const supabase = (await createClient()) as any
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center">
-                <h1 className="text-2xl font-bold text-white mb-4">Profile</h1>
-                <p className="text-gray-400 mb-8">Please log in to view your profile.</p>
+                <h1 className="text-4xl font-[family-name:var(--font-serif)] text-[var(--color-text)] mb-6">Profile</h1>
+                <p className="text-[var(--color-text-muted)] mb-8 font-light">Please log in to view your profile.</p>
                 <Link
                     href="/login"
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                    className="px-8 py-3 bg-[var(--color-text)] text-[var(--color-bg)] rounded-full font-medium hover:bg-[var(--color-primary)] transition-colors uppercase tracking-widest text-xs"
                 >
                     Log In
                 </Link>
@@ -53,57 +54,92 @@ export default async function ProfilePage() {
     const guides = guidesData as Guide[] | null
 
     return (
-        <div className="max-w-md mx-auto p-4 pb-24 space-y-8">
-            {/* User Profile Section */}
-            <section className="bg-[#15151b] p-6 rounded-xl border border-white/5">
-                <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center text-2xl font-bold text-white overflow-hidden">
-                        {profile?.avatar_url ? (
-                            <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                        ) : (
-                            (profile?.display_name?.[0] || user.email?.[0] || '?').toUpperCase()
+        <div className="w-full p-6 pb-24">
+            {/* Profile Header */}
+            <header className="mb-16 border-b border-[var(--border-subtle)] pb-12">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                    <div className="flex-1">
+                        <span className="block text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-4">
+                            Member Profile
+                        </span>
+                        <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-serif)] text-[var(--color-text)] leading-tight mb-6">
+                            {profile?.display_name || 'Anonymous User'}
+                        </h1>
+
+                        <div className="flex items-center gap-6 text-sm text-[var(--color-text-muted)] font-light">
+                            <span>{user.email}</span>
+                            <span className="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                            <span className="capitalize">{profile?.role || 'Member'}</span>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-6">
+                        <div className="w-24 h-24 rounded-full bg-[var(--color-surface-hover)] flex items-center justify-center text-[var(--color-text)] text-3xl font-bold border border-[var(--border-subtle)]">
+                            {profile?.avatar_url ? (
+                                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                            ) : (
+                                (profile?.display_name?.[0] || user.email?.[0] || '?').toUpperCase()
+                            )}
+                        </div>
+                        <SignOutButton />
+                    </div>
+                </div>
+            </header>
+
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                {/* Left Column: History */}
+                <div className="lg:col-span-8">
+                    <div className="flex items-center gap-2 mb-8">
+                        <BookOpen size={16} className="text-[var(--color-primary)]" />
+                        <h2 className="text-lg font-[family-name:var(--font-serif)] text-[var(--color-text)]">
+                            Your Conversations
+                        </h2>
+                    </div>
+
+                    <div className="space-y-12">
+                        {conversations?.map((conversation) => (
+                            <ConversationCard key={conversation.id} conversation={conversation} currentUserId={user.id} />
+                        ))}
+                        {(!conversations || conversations.length === 0) && (
+                            <p className="text-[var(--color-text-muted)] text-sm font-light italic">
+                                You haven't started any discussions yet.
+                            </p>
                         )}
                     </div>
+                </div>
+
+                {/* Right Column: Guides & Settings */}
+                <div className="lg:col-span-4 space-y-12">
+                    {/* Communication Guide */}
                     <div>
-                        <h2 className="text-xl font-bold text-white">{profile?.display_name || 'User'}</h2>
-                        <p className="text-sm text-gray-400">{user.email}</p>
-                        <span className="inline-block mt-1 px-2 py-0.5 text-xs bg-white/10 text-gray-300 rounded-full capitalize">
-                            {profile?.role || 'user'}
-                        </span>
+                        <div className="flex items-center gap-2 mb-6">
+                            <Settings size={16} className="text-[var(--color-primary)]" />
+                            <h2 className="text-lg font-[family-name:var(--font-serif)] text-[var(--color-text)]">
+                                Community Standards
+                            </h2>
+                        </div>
+
+                        <div className="space-y-6">
+                            {guides?.map((guide) => (
+                                <div key={guide.id} className="group">
+                                    <h4 className="text-sm font-medium text-[var(--color-text)] mb-2 group-hover:text-[var(--color-primary)] transition-colors">
+                                        {guide.title}
+                                    </h4>
+                                    <p className="text-xs text-[var(--color-text-muted)] leading-relaxed font-light">
+                                        {guide.content}
+                                    </p>
+                                </div>
+                            ))}
+                            {(!guides || guides.length === 0) && (
+                                <p className="text-[var(--color-text-muted)] text-sm font-light italic">
+                                    No guides available.
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
-                {/* Sign out button */}
-                <SignOutButton />
-            </section>
-
-            {/* Post History Section */}
-            <section>
-                <h3 className="text-lg font-bold text-white mb-4">Your Conversations</h3>
-                <div className="space-y-4">
-                    {conversations?.map((conversation) => (
-                        <ConversationCard key={conversation.id} conversation={conversation} currentUserId={user.id} />
-                    ))}
-                    {(!conversations || conversations.length === 0) && (
-                        <p className="text-gray-500 text-center py-4">You haven't started any discussions yet.</p>
-                    )}
-                </div>
-            </section>
-
-            {/* Communication Guide Section */}
-            <section>
-                <h3 className="text-lg font-bold text-white mb-4">Communication Guide</h3>
-                <div className="space-y-4">
-                    {guides?.map((guide) => (
-                        <div key={guide.id} className="bg-[#15151b] p-4 rounded-xl border border-white/5">
-                            <h4 className="font-bold text-white mb-2">{guide.title}</h4>
-                            <p className="text-sm text-gray-400">{guide.content}</p>
-                        </div>
-                    ))}
-                    {(!guides || guides.length === 0) && (
-                        <p className="text-gray-500 text-center py-4">No guides available.</p>
-                    )}
-                </div>
-            </section>
+            </div>
         </div>
     )
 }

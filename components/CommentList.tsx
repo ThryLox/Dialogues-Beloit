@@ -7,38 +7,55 @@ type CommentWithAuthor = Database['public']['Tables']['comments']['Row'] & {
     user_vote?: number
 }
 
-export default function CommentList({ comments }: { comments: CommentWithAuthor[] }) {
+export default function CommentList({ comments, onReply }: { comments: CommentWithAuthor[], onReply?: (authorName: string) => void }) {
+    if (!comments || comments.length === 0) {
+        return (
+            <div className="text-center py-12 text-[var(--color-text-muted)] text-sm italic font-serif">
+                No responses yet. Be the first to write.
+            </div>
+        )
+    }
+
     return (
-        <div className="space-y-6 mt-8">
-            <h3 className="text-lg font-bold text-white mb-4">Comments ({comments.length})</h3>
+        <div className="space-y-8">
             {comments.map((comment) => (
-                <div key={comment.id} className="flex space-x-3">
-                    <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-xs font-bold text-white overflow-hidden">
-                            {comment.author?.avatar_url ? (
-                                <img src={comment.author.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                            ) : (
-                                (comment.author?.display_name?.[0] || '?').toUpperCase()
-                            )}
+                <div key={comment.id} className="group">
+                    <div className="flex justify-between items-start mb-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded-full bg-[var(--color-surface-hover)] flex items-center justify-center text-[var(--color-text-muted)] text-[10px] font-bold">
+                                {(comment.author?.display_name?.[0] || '?').toUpperCase()}
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest">
+                                <span className="text-[var(--color-text)] font-medium">
+                                    {comment.author?.display_name || 'User'}
+                                </span>
+                                <span className="text-[var(--color-text-muted)]">•</span>
+                                <span className="text-[var(--color-text-muted)]">
+                                    {new Date(comment.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div className="flex-1">
-                        <div className="bg-[#15151b] p-3 rounded-lg border border-white/5">
-                            <div className="flex justify-between items-start mb-2">
-                                <div className="flex items-center space-x-2">
-                                    <span className="text-sm font-bold text-white">{comment.author?.display_name || 'User'}</span>
-                                    <span className="text-xs text-gray-500">{new Date(comment.created_at).toLocaleDateString()}</span>
-                                </div>
-                            </div>
-                            <p className="text-sm text-gray-300 whitespace-pre-wrap mb-2">{comment.body}</p>
-                            <div className="flex items-center">
-                                <CommentVote
-                                    id={comment.id}
-                                    initialScore={comment.score}
-                                    initialUserVote={comment.user_vote}
-                                    orientation="horizontal"
-                                />
-                            </div>
+
+                    <div className="pl-9">
+                        <p className="text-[var(--color-text-muted)] text-sm leading-relaxed whitespace-pre-wrap mb-4 font-light">
+                            {comment.body}
+                        </p>
+
+                        <div className="flex items-center justify-between pb-8 border-b border-[var(--border-subtle)] group-last:border-0">
+                            <CommentVote
+                                id={comment.id}
+                                initialScore={comment.score}
+                                initialUserVote={comment.user_vote}
+                                orientation="horizontal"
+                            />
+
+                            <button
+                                onClick={() => onReply?.(comment.author?.display_name || 'User')}
+                                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-[10px] uppercase tracking-widest transition-colors opacity-0 group-hover:opacity-100"
+                            >
+                                Reply
+                            </button>
                         </div>
                     </div>
                 </div>

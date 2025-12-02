@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #050509;
-  --color-surface: #15151b;
-  --color-accent: #3b82f6;
-  --color-text: #f9fafb;
+  /* Beloit College Brand Identity */
+  /* Primary: Beloit Blue (#003865) */
+  /* Accent: Beloit Gold (#F2A900) */
+
+  /* Backgrounds */
+  --color-bg: #003865;
+  /* Beloit Blue */
+  --color-surface: #004a80;
+  /* Lighter Blue for cards */
+  --color-surface-hover: #005c99;
+  /* Even lighter for hover */
+
+  /* Accents */
+  --color-primary: #F2A900;
+  /* Beloit Gold */
+  --color-primary-hover: #ffc42e;
+  /* Lighter Gold */
+  --color-accent: #F2A900;
+  /* Beloit Gold */
+  --color-success: #4a6741;
+  /* Hunter Green */
+
+  /* Text */
+  --color-text: #ffffff;
+  /* White */
+  --color-text-muted: #a0c4df;
+  /* Light blue-gray */
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-highlight: #F2A900;
+  /* Gold highlight */
+
+  /* Typography */
+  --font-serif: var(--font-serif), serif;
+  --font-sans: var(--font-sans), sans-serif;
 }
 
 @theme inline {
   --color-background: var(--color-bg);
   --color-foreground: var(--color-text);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-accent);
 }
 
 body {
+  font-family: var(--font-sans);
   background-color: var(--color-bg);
   color: var(--color-text);
+  /* No texture, just clean, deep color */
+  background-image: none;
 }
 
-.bg-surface {
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-hover);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-highlight);
+}
+
+/* Modern Utilities */
+.glass-header {
+  background: rgba(0, 56, 101, 0.9);
+  /* Beloit Blue with opacity */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.nav-item {
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background-color: var(--color-surface-hover);
+  transform: translateY(-1px);
+}
+
+.card-hover {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-subtle);
+}
+
+.card-hover:hover {
+  border-color: var(--border-highlight);
   background-color: var(--color-surface);
-}
-
-.pb-safe {
-  padding-bottom: env(safe-area-inset-bottom);
 }
